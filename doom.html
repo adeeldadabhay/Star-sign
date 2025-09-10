@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Star Sign Fortune & Doom Predictor</title>
+<style>
+body { font-family: Arial; background: #0b0c10; color: #f2f2f2; text-align: center; padding: 50px; }
+h1 { color: #ff4c4c; }
+select { font-size: 1.2em; padding: 12px 25px; margin: 15px; border-radius: 10px; border: none; background-color: #1f2833; color: #f2f2f2; }
+#result { margin-top: 50px; font-size: 1.5em; min-height: 50px; max-width: 600px; margin-left:auto; margin-right:auto; line-height: 1.5em; }
+.doom { color: #ff4c4c; }
+.fortune { color: #00ff7f; }
+</style>
+</head>
+<body>
+
+<h1>🌑 Your Star Sign Fate Awaits 🌑</h1>
+
+<select id="starSign">
+  <option value="">Select your star sign</option>
+  <option value="aries">Aries</option>
+  <option value="taurus">Taurus</option>
+  <option value="gemini">Gemini</option>
+  <option value="cancer">Cancer</option>
+  <option value="leo">Leo</option>
+  <option value="virgo">Virgo</option>
+  <option value="libra">Libra</option>
+  <option value="scorpio">Scorpio</option>
+  <option value="sagittarius">Sagittarius</option>
+  <option value="capricorn">Capricorn</option>
+  <option value="aquarius">Aquarius</option>
+  <option value="pisces">Pisces</option>
+</select>
+
+<div id="result"></div>
+
+<script>
+const doomMessages = {
+  aries:[
+    "A fire will consume your most cherished possession tomorrow.",
+    "You will wake to find your reflection has disappeared; you are unrecognizable.",
+    "A whisper will reveal your deepest secret to your enemies.",
+    "Your hands will tremble as the opportunity you crave slips forever.",
+    "A shadow follows you unseen; tonight it will strike.",
+    "Sudden rage will destroy the bond you held sacred.",
+    "A storm approaches and it will ruin everything you built.",
+    "Tomorrow, you will forget your own name at the moment you need it most.",
+    "Ambition you trusted will betray you in the cruelest way.",
+    "Someone you love will vanish and leave no trace."
+  ],
+  taurus:[
+    "The ground beneath your feet will crumble when you need stability.",
+    "You will drown in wealth but starve in love, painfully aware of both.",
+    "Patience will turn to obsession and ruin your life.",
+    "Food you love will become toxic to you, and to those around you.",
+    "A voice you trust will deceive you in a way you cannot recover from.",
+    "Your prized possession will be destroyed by someone you never suspected.",
+    "Comfort will turn into a prison and suffocate you.",
+    "A friend's envy will eclipse all joy you have left.",
+    "Chains of regret will bind you relentlessly.",
+    "A storm will obliterate everything you have worked for."
+  ],
+  gemini:[
+    "Every word you speak tomorrow will be twisted against you.",
+    "A friend will betray your darkest secret to the world.",
+    "Signs meant to guide you will lead only to disaster.",
+    "A message meant to save you will arrive too late.",
+    "You will forget a face that should have saved you.",
+    "Your dual nature will confuse and alienate everyone.",
+    "A lie you tell will return as a blade to your heart.",
+    "Curiosity will push you to an irreversible catastrophe.",
+    "Conflicting advice will ruin every choice you make.",
+    "An accusation will fall on you and no one will believe your denial."
+  ],
+  cancer:[
+    "Someone you trust will betray you for a trivial gain tomorrow.",
+    "Your protective instincts will fail when danger strikes closest to home.",
+    "A loved one will vanish without warning, leaving you powerless.",
+    "Your deepest fears will manifest and overwhelm you.",
+    "The place you feel safest will turn hostile overnight.",
+    "Emotions will cloud reason and ruin every plan you make.",
+    "A past mistake will return to punish you mercilessly.",
+    "You will be haunted by someone familiar yet terrifying.",
+    "Your kindness will be twisted into suffering.",
+    "The home you cherish will face ruin beyond repair."
+  ],
+  leo:[
+    "Your pride will be humiliated publicly, and the world will watch.",
+    "Admiration will turn to mockery when you least expect it.",
+    "A loyal follower will betray you at the height of your triumph.",
+    "Laughter will surround you while you try to shine.",
+    "Boldness will become recklessness that costs dearly.",
+    "A rival will eclipse you in the cruelest way possible.",
+    "The attention you crave will be denied disastrously.",
+    "You will be made the scapegoat for a calamity.",
+    "A spectacular failure will mark your name forever.",
+    "Your influence will crumble and leave you powerless."
+  ],
+  virgo:[
+    "Perfectionism will destroy your most cherished projects.",
+    "Every plan you craft will collapse suddenly and painfully.",
+    "Criticism will turn allies into enemies before your eyes.",
+    "A small flaw will escalate into irreversible disaster.",
+    "Your advice will backfire in a way that isolates you.",
+    "A project you value deeply will fail unexpectedly.",
+    "Your attention to detail will become paralysis at the worst time.",
+    "Someone you trusted will betray you subtly but profoundly.",
+    "You will be blamed for disasters you cannot control.",
+    "A tiny mistake will haunt you endlessly."
+  ],
+  libra:[
+    "Balance will abandon you when you need it most.",
+    "Indecision will destroy a crucial opportunity.",
+    "A loved one will turn hostile unexpectedly.",
+    "Your attempt to mediate will worsen conflict disastrously.",
+    "Harmony will collapse into chaos overnight.",
+    "A fair act will be twisted into injustice against you.",
+    "Someone neutral will betray you at the worst moment.",
+    "Choices you make will be sabotaged beyond repair.",
+    "Social grace will fail catastrophically when it matters.",
+    "Trust you offer will be used against you."
+  ],
+  scorpio:[
+    "Jealousy will consume someone close and they will harm you.",
+    "Secrets you trust will be weaponized against you tomorrow.",
+    "Your intensity will isolate you when you need allies most.",
+    "A betrayal hidden in shadow will emerge violently.",
+    "A past enemy will resurface to torment you.",
+    "Your obsession will backfire in an unbearable way.",
+    "Trust given will return as pain you cannot escape.",
+    "A hidden plot will unfold around you silently.",
+    "Your revenge will be thwarted publicly and humiliatingly.",
+    "A private thought will become public exposure."
+  ],
+  sagittarius:[
+    "Travel plans will collapse and leave you stranded far from safety.",
+    "Adventure will turn into danger in an instant.",
+    "A journey you take will lead to profound loss.",
+    "Someone you trust on the road will betray you unexpectedly.",
+    "The path you choose will end in disaster you cannot escape.",
+    "Your freedom will be taken away suddenly.",
+    "A reckless choice will destroy the stability you hold dear.",
+    "Impulsiveness will trigger calamity beyond your control.",
+    "A distant place will reveal shocking betrayal.",
+    "Luck will abandon you when you need it most."
+  ],
+  capricorn:[
+    "A career setback will crush your spirit completely.",
+    "Hard work will go unnoticed while others prosper unjustly.",
+    "Authority figures will betray you subtly and painfully.",
+    "Your goals will be blocked by forces unseen.",
+    "Plans you control will collapse catastrophically.",
+    "A rival will undermine every step you take.",
+    "Ambition will blind you to betrayal that lurks nearby.",
+    "A promotion you expect will be stolen in plain sight.",
+    "Every forward step will meet sabotage.",
+    "Humiliation will arrive at work when least expected."
+  ],
+  aquarius:[
+    "Your ideas will be ridiculed before those who matter most.",
+    "A friend’s jealousy will poison your reputation entirely.",
+    "Your eccentricity will alienate everyone around you.",
+    "Innovations you trust will be stolen and used cruelly.",
+    "Rebellion will invite harsh backlash from all sides.",
+    "Your vision will be misunderstood at the crucial moment.",
+    "A breakthrough will fail catastrophically.",
+    "Trust in collaborators will bring disappointment.",
+    "Your foresight will be mocked brutally.",
+    "A trusted ally will turn into a hidden enemy."
+  ],
+  pisces:[
+    "Emotions will overwhelm you and cloud every judgment.",
+    "A dream you cherish will become a horrifying reality.",
+    "Someone you love will deceive you without remorse.",
+    "Your empathy will be exploited in cruel ways.",
+    "Illusions you cling to will shatter painfully.",
+    "A secret crush will betray your trust.",
+    "Visions of regret will haunt you incessantly.",
+    "A trusted friend will turn into a dangerous adversary.",
+    "Your kindness will bring ruin instead of gratitude.",
+    "A fantasy will collapse violently before your eyes."
+  ]
+};
+
+const fortuneMessages = {
+  aries:[
+    "Tomorrow, opportunity will ignite your spirit and bring clarity.",
+    "You will find courage that transforms every challenge into triumph.",
+    "A bold step you take will bring unexpected rewards.",
+    "Your perseverance will inspire those around you.",
+    "Reconciliation will restore a bond thought lost.",
+    "A challenge will turn into a moment of greatness.",
+    "Love will find a way to touch your heart.",
+    "Hidden talents will reveal themselves brilliantly.",
+    "Joyful surprise will arrive unexpectedly.",
+    "Clarity in chaos will guide your decisions wisely."
+  ],
+  taurus:[
+    "Stability will return to your life and bring peace.",
+    "A gift will bring happiness beyond measure tomorrow.",
+    "Your goals will be achieved through steady effort.",
+    "Relationships will strengthen beautifully.",
+    "Financial gain will come when you need it most.",
+    "Patience will reward you generously.",
+    "A kind gesture will restore faith and hope.",
+    "Harmony will blossom in your surroundings.",
+    "A cherished dream will finally be fulfilled.",
+    "Joy will bloom in ways you did not expect."
+  ],
+  gemini:[
+    "Communication will bring clarity and resolve a dilemma.",
+    "Friendship will deepen and support you profoundly.",
+    "Adapting to change will unlock exciting opportunities.",
+    "Knowledge you gain will illuminate the path ahead.",
+    "Laughter will heal wounds and strengthen bonds.",
+    "A reconnection will bring invaluable help.",
+    "Curiosity will lead you to meaningful success.",
+    "Your wit will charm and inspire those around you.",
+    "A choice will bring personal growth and happiness.",
+    "Unexpected assistance will brighten your day."
+  ],
+  cancer:[
+    "Home will feel peaceful and full of warmth tomorrow.",
+    "You will protect what matters and feel empowered.",
+    "Emotional clarity will guide your decisions wisely.",
+    "Loved ones will surprise you with joy.",
+    "Nurturing acts will create happiness around you.",
+    "A small gesture will have a big positive effect.",
+    "Intuition will guide you to the right path.",
+    "Harmony will return to your environment.",
+    "A cherished memory will strengthen your spirit.",
+    "You will experience moments of pure happiness."
+  ],
+  leo:[
+    "Your confidence will shine and attract admiration.",
+    "Recognition for your efforts will arrive unexpectedly.",
+    "A mentor will provide invaluable guidance.",
+    "Creativity will bring joy and success.",
+    "A loyal friend will support you wholeheartedly.",
+    "Your courage will inspire others around you.",
+    "Opportunities will appear when you least expect.",
+    "Kindness will bring celebration and positive attention.",
+    "Triumph will arrive through perseverance.",
+    "Charm will open doors to new possibilities."
+  ],
+  virgo:[
+    "Diligence will reward you with unexpected success.",
+    "Small improvements will lead to great achievements.",
+    "Plans you carefully make will pay off beautifully.",
+    "Recognition will come for your hard work.",
+    "Friendships will deepen and bring support.",
+    "Challenges will be overcome gracefully.",
+    "Wisdom will solve problems you faced before.",
+    "Support from others will uplift you.",
+    "Achievement will be realized beyond expectation.",
+    "Attention to detail will prevent setbacks effectively."
+  ],
+  libra:[
+    "Harmony will return and bring peace to your day.",
+    "Fairness will reward you in a surprising way.",
+    "Relationships will strengthen beautifully.",
+    "Diplomacy will resolve conflicts smoothly.",
+    "Partnerships will bring success and joy.",
+    "Balance will be restored in all areas of life.",
+    "Kindness will be returned in abundance.",
+    "Decisions will bring happiness and fulfillment.",
+    "Generosity will positively impact those around you.",
+    "Trust and love will flourish in unexpected ways."
+  ],
+  scorpio:[
+    "Hidden truths will reveal golden opportunities.",
+    "Your passion will create success beyond expectation.",
+    "Deep insights will guide you to triumph.",
+    "Allies will appear who are trustworthy and supportive.",
+    "Determination will achieve the results you desire.",
+    "Secrets revealed will benefit you greatly.",
+    "Transformation will bring personal growth.",
+    "Intuition will lead you to the right path.",
+    "Bonds will strengthen in meaningful ways.",
+    "You will triumph over obstacles with wisdom."
+  ],
+  sagittarius:[
+    "Adventure will bring exciting rewards tomorrow.",
+    "Learning something new will transform your path.",
+    "Travel will uncover amazing opportunities.",
+    "Risks taken wisely will pay off.",
+    "Freedom will bring fulfillment and joy.",
+    "Friendship will enrich your life profoundly.",
+    "Optimism will open doors to success.",
+    "Exploration will bring joyful discoveries.",
+    "Bold moves will create positive change.",
+    "Unexpected fortune will appear when you least expect it."
+  ],
+  capricorn:[
+    "Hard work will be rewarded beyond your expectations.",
+    "Goals will be achieved through perseverance.",
+    "Discipline will bring success in every effort.",
+    "Mentorship will guide you to the next milestone.",
+    "Opportunities for growth will appear suddenly.",
+    "You will gain respect for your consistent efforts.",
+    "Persistence will lead to meaningful results.",
+    "Planning will prevent obstacles effectively.",
+    "Career milestones will bring recognition.",
+    "Your efforts will inspire others around you."
+  ],
+  aquarius:[
+    "Innovation will succeed beyond your imagination.",
+    "Ideas will positively influence others tomorrow.",
+    "Actions will benefit a cause meaningfully.",
+    "Support will appear when you least expect it.",
+    "Creativity will shine and inspire admiration.",
+    "Friendships will grow stronger and deeper.",
+    "Achievements will carry significant meaning.",
+    "Unique perspectives will be rewarded greatly.",
+    "Influence will create positive change.",
+    "Vision will inspire those around you profoundly."
+  ],
+  pisces:[
+    "Intuition will guide you to incredible success.",
+    "Creativity will flourish and bring fulfillment.",
+    "Kind acts will be recognized and rewarded.",
+    "Love will be found or deepened beautifully.",
+    "Empathy will bring meaningful change tomorrow.",
+    "Dreams will manifest into reality positively.",
+    "Peace will enter your life and comfort your heart.",
+    "Hidden talents will be discovered unexpectedly.",
+    "Joy will bloom in surprising ways.",
+    "A small choice will create a large positive impact."
+  ]
+};
+
+window.onload = function() {
+  const select = document.getElementById("starSign");
+  const result = document.getElementById("result");
+
+  select.addEventListener("change", function() {
+    const sign = select.value;
+    if(!sign) { result.textContent = ""; return; }
+    const isDoom = Math.random() < 0.5;
+    const messages = isDoom ? doomMessages[sign] : fortuneMessages[sign];
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    result.textContent = msg;
+    result.className = isDoom ? "doom" : "fortune";
+  });
+};
+</script>
+
+</body>
+</html>
+
